@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "ClimbingSystemEditor Editor Win64 Development (ClimbingSystem)",
+            "compilerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64",
+            "configurationProvider": "epic.ue",
+            "compileCommands": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem.json"
+        },
+        {
+            "name": "Win32",
+            "compilerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64",
+            "configurationProvider": "epic.ue",
+            "compileCommands": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_Default.json"
+        }
+    ],
+    "version": 4
+}
