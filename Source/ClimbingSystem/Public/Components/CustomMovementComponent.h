@@ -6,6 +6,15 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CustomMovementComponent.generated.h"
 
+UENUM(BlueprintType)
+namespace ECustomMovementMode
+{
+	enum Type
+	{
+		MOVE_Climb UMETA(DisplayName = "Climb Mode")
+	};
+}
+
 /**
  * 
  */
@@ -14,14 +23,32 @@ class CLIMBINGSYSTEM_API UCustomMovementComponent : public UCharacterMovementCom
 {
 	GENERATED_BODY()
 
+public:
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+
 private:
 
 #pragma region ClimbTraces
-	TArray<FHitResult> DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false);
+	TArray<FHitResult> DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPresistantShapes = false);
+	FHitResult DoLineTraceSingleByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPresistantShapes = false);
+#pragma endregion
+
+#pragma region ClimbCore
+	bool TraceClimableSurfaces(); 
+
+	FHitResult TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f);
+
+	bool CanStartClimbing();
+#pragma endregion
+
+#pragma region ClimbCoreVariables
+
+	TArray<FHitResult> ClimableSurfacesTracedResults;
 
 #pragma endregion
 
-#pragma region ClimbVariables
+#pragma region ClimbBPVariables
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
 	TArray<TEnumAsByte<EObjectTypeQuery>>ClimableSurfaceTraceTypes;
 	
@@ -31,4 +58,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
 	float ClimbCapsuleTraceHalfHeight = 72.f;
 #pragma endregion
+
+public:
+ void ToggleClimbing(bool bEnableClimb);
+ bool IsClimbing() const;
+
 };
