@@ -5,6 +5,9 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "ClimbingSystem/ClimbingSystemCharacter.h"
 #include "ClimbingSystem/DebugHelper.h"
+#include "Components/CapsuleComponent.h"
+
+
 
 
 void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -15,8 +18,54 @@ void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 
 }
+void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
+{   
+    if(IsClimbing()){
+        bOrientRotationToMovement = false;
+        CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(48.f);
+    }
+    if(PreviousMovementMode == MOVE_Custom && PreviousCustomMode == ECustomMovementMode::MOVE_Climb){
+        bOrientRotationToMovement = true;
+        CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(96.f);
+
+        StopMovementImmediately();
+    }
+
+    Super::OnMovementModeChanged( PreviousMovementMode, PreviousCustomMode);
+}
+
+void UCustomMovementComponent::PhysCustom(float deltaTime, int32 Iterations)
+{   
+    if(IsClimbing()){
+        PhysClimb(deltaTime,Iterations);
+    }
+
+    Super::PhysCustom(deltaTime,Iterations);
+}
+
+float UCustomMovementComponent::GetMaxSpeed() const
+{   
+    if(IsClimbing()){
+        return MaxClimbSpeed;
+    }
+    else{
+        return Super::GetMaxSpeed();
+    }
+}
+
+float UCustomMovementComponent::GetMaxAcceleration() const
+{
+    if(IsClimbing()){
+        return MaxClimbAcceleration;
+    }
+    else{
+        return Super::GetMaxAcceleration();
+    }
+}
+
 #pragma region ClimbTraces
-TArray<FHitResult> UCustomMovementComponent::DoCapsuleTraceMultiByObject(const FVector &Start, const FVector &End, bool bShowDebugShape , bool bDrawPresistantShapes)
+
+TArray<FHitResult> UCustomMovementComponent::DoCapsuleTraceMultiByObject(const FVector &Start, const FVector &End, bool bShowDebugShape, bool bDrawPresistantShapes)
 {   
     TArray<FHitResult> OutCapsuleTraceHitResults; 
     EDrawDebugTrace::Type DebugTraceType = EDrawDebugTrace::None;
@@ -75,11 +124,15 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
         if(CanStartClimbing()){
             //enter climb state   
             Debug::Print(TEXT("Can Start Climbing"));
+            StartClimbing();
         }
         else{
             //stop climbing
             Debug::Print(TEXT("Can Not Start Climbing"));
         }
+    }
+    else{
+        StopClimbing();
     }
 
 }
@@ -91,6 +144,107 @@ bool UCustomMovementComponent::CanStartClimbing()
     if(!TraceFromEyeHeight(100.f).bBlockingHit) return false;
 
     return true;
+}
+
+void UCustomMovementComponent::StartClimbing()
+{   
+    SetMovementMode(MOVE_Custom,ECustomMovementMode::MOVE_Climb);
+}
+void UCustomMovementComponent::StopClimbing()
+{   
+    SetMovementMode(MOVE_Falling);
+}
+void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
+{   
+    if (deltaTime < MIN_TICK_TIME)
+	{
+		return;
+	}
+
+	/*Process all the climbable surfaces info*/
+    TraceClimableSurfaces();
+    ProcessClimbableSurfaceInfo();
+
+
+	/*Check if we should stop climbing*/
+
+
+	RestorePreAdditiveRootMotionVelocity();
+
+	if( !HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity() )
+	{	//Define the max climb speed and acceleration
+		CalcVelocity(deltaTime, 0.f, true, MaxBreakClimbDeceleration);
+	}
+
+	ApplyRootMotionToVelocity(deltaTime);
+
+	FVector OldLocation = UpdatedComponent->GetComponentLocation();
+	const FVector Adjusted = Velocity * deltaTime;
+	FHitResult Hit(1.f);
+
+	//Handle climb rotation
+	SafeMoveUpdatedComponent(Adjusted, GetClimbRotation(deltaTime), true, Hit);
+
+	if (Hit.Time < 1.f)
+	{
+		//adjust and try again
+		HandleImpact(Hit, deltaTime, Adjusted);
+		SlideAlongSurface(Adjusted, (1.f-Hit.Time), Hit.Normal, Hit, true);
+	}
+
+	if(!HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity() )
+	{
+		Velocity = (UpdatedComponent->GetComponentLocation() - OldLocation) / deltaTime;
+	}
+
+	/*Snap movement to climbable surfaces*/
+    SnapMovementToClimableSurfaces(deltaTime);
+}
+void UCustomMovementComponent::ProcessClimbableSurfaceInfo()
+{
+    CurrentClimbableSurfaceLocation = FVector::ZeroVector;
+
+    CurrentClimbableSurfaceNormal = FVector::ZeroVector;
+
+    if(ClimableSurfacesTracedResults.IsEmpty()) return;
+
+    for(const FHitResult& TracedHitResult : ClimableSurfacesTracedResults){
+        CurrentClimbableSurfaceLocation += TracedHitResult.ImpactPoint;
+        CurrentClimbableSurfaceNormal += TracedHitResult.ImpactNormal;
+    }
+
+    CurrentClimbableSurfaceLocation /= ClimableSurfacesTracedResults.Num();
+    CurrentClimbableSurfaceNormal = CurrentClimbableSurfaceNormal.GetSafeNormal();
+
+}
+
+FQuat UCustomMovementComponent::GetClimbRotation(float DeltaTime)
+{   
+    const FQuat CurrentQuat = UpdatedComponent->GetComponentQuat();
+
+    if(HasAnimRootMotion() || CurrentRootMotion.HasOverrideVelocity()){
+        return CurrentQuat;
+    }
+
+    const FQuat TargetQuat = FRotationMatrix::MakeFromX(-CurrentClimbableSurfaceNormal).ToQuat();
+
+    return FMath::QInterpTo(CurrentQuat,TargetQuat,DeltaTime,5.f);
+}
+
+void UCustomMovementComponent::SnapMovementToClimableSurfaces(float DeltaTime)
+{   
+    const FVector ComponentForward = UpdatedComponent->GetForwardVector();
+    const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+
+    const FVector ProjectedCharacterToSurface = 
+    (CurrentClimbableSurfaceLocation - ComponentLocation).ProjectOnTo(ComponentForward);
+
+    const FVector SnapVector = -CurrentClimbableSurfaceNormal * ProjectedCharacterToSurface.Length();
+
+    UpdatedComponent->MoveComponent(
+        SnapVector*DeltaTime*MaxClimbSpeed,
+        UpdatedComponent->GetComponentQuat(),
+        true);
 }
 
 bool UCustomMovementComponent::IsClimbing() const
@@ -105,7 +259,7 @@ bool UCustomMovementComponent::TraceClimableSurfaces()
     const FVector Start = UpdatedComponent->GetComponentLocation() + StartOffset;
     const FVector End = Start + UpdatedComponent->GetForwardVector();
 
-    ClimableSurfacesTracedResults = DoCapsuleTraceMultiByObject(Start, End, true,true);
+    ClimableSurfacesTracedResults = DoCapsuleTraceMultiByObject(Start, End, true);
     
     return !ClimableSurfacesTracedResults.IsEmpty();
 }
@@ -118,7 +272,7 @@ FHitResult UCustomMovementComponent::TraceFromEyeHeight(float TraceDistance, flo
     const FVector Start = ComponentLocation + EyeHeightOffset;
     const FVector End = Start + UpdatedComponent->GetForwardVector() * TraceDistance;
 
-    return DoLineTraceSingleByObject(Start,End,true,true);
+    return DoLineTraceSingleByObject(Start,End);
 }
 
 
