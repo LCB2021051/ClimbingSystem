@@ -28,6 +28,10 @@ void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovem
         bOrientRotationToMovement = true;
         CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(96.f);
 
+        const FRotator DirtyRotation = UpdatedComponent->GetComponentRotation();
+        const FRotator CleanStandRotation = FRotator(0.f,DirtyRotation.Yaw,0.f);
+        UpdatedComponent->SetRelativeRotation(CleanStandRotation);
+
         StopMovementImmediately();
     }
 
@@ -167,6 +171,10 @@ void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
 
 
 	/*Check if we should stop climbing*/
+    if(CheckShouldStopClimbing())
+    {
+        StopClimbing();
+    }
 
 
 	RestorePreAdditiveRootMotionVelocity();
@@ -200,52 +208,83 @@ void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
 	/*Snap movement to climbable surfaces*/
     SnapMovementToClimableSurfaces(deltaTime);
 }
+
 void UCustomMovementComponent::ProcessClimbableSurfaceInfo()
 {
     CurrentClimbableSurfaceLocation = FVector::ZeroVector;
 
     CurrentClimbableSurfaceNormal = FVector::ZeroVector;
 
-    if(ClimableSurfacesTracedResults.IsEmpty()) return;
+    if(ClimbableSurfacesTracedResults.IsEmpty()) return;
 
-    for(const FHitResult& TracedHitResult : ClimableSurfacesTracedResults){
+    for(const FHitResult& TracedHitResult : ClimbableSurfacesTracedResults){
         CurrentClimbableSurfaceLocation += TracedHitResult.ImpactPoint;
         CurrentClimbableSurfaceNormal += TracedHitResult.ImpactNormal;
     }
 
-    CurrentClimbableSurfaceLocation /= ClimableSurfacesTracedResults.Num();
+    CurrentClimbableSurfaceLocation /= ClimbableSurfacesTracedResults.Num();
     CurrentClimbableSurfaceNormal = CurrentClimbableSurfaceNormal.GetSafeNormal();
 
 }
 
+bool UCustomMovementComponent::CheckShouldStopClimbing()
+{   
+    if(ClimbableSurfacesTracedResults.IsEmpty()) return true;
+    const float DotResult = FVector::DotProduct(CurrentClimbableSurfaceNormal,FVector::UpVector);
+    const float DegreeDiff = FMath::RadiansToDegrees(FMath::Acos(DotResult));
+
+    if(DegreeDiff<=60.f)
+    {
+        return true;
+    }
+    
+    Debug::Print(TEXT("Degree Diff: ") + FString::SanitizeFloat(DegreeDiff),FColor::Cyan,1);
+
+    return false;
+}
+
 FQuat UCustomMovementComponent::GetClimbRotation(float DeltaTime)
 {   
+    // Get the current rotation of the movement component
     const FQuat CurrentQuat = UpdatedComponent->GetComponentQuat();
 
-    if(HasAnimRootMotion() || CurrentRootMotion.HasOverrideVelocity()){
+    // Check if there is animation root motion or if there's an override velocity
+    if (HasAnimRootMotion() || CurrentRootMotion.HasOverrideVelocity()) {
+        // If yes, return the current rotation without any changes
         return CurrentQuat;
     }
 
+    // If there's no animation root motion or override velocity:
+    // Create a rotation based on the negative of the current climbable surface normal
     const FQuat TargetQuat = FRotationMatrix::MakeFromX(-CurrentClimbableSurfaceNormal).ToQuat();
 
-    return FMath::QInterpTo(CurrentQuat,TargetQuat,DeltaTime,5.f);
+    // Interpolate (blend) between the current rotation and the target rotation over time (DeltaTime)
+    // The 5.f is a speed factor, controlling how fast the interpolation happens
+    return FMath::QInterpTo(CurrentQuat, TargetQuat, DeltaTime, 5.f);
 }
+
 
 void UCustomMovementComponent::SnapMovementToClimableSurfaces(float DeltaTime)
 {   
+    // Get the forward direction of the movement component
     const FVector ComponentForward = UpdatedComponent->GetForwardVector();
+
+    // Get the current location of the movement component
     const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
 
-    const FVector ProjectedCharacterToSurface = 
-    (CurrentClimbableSurfaceLocation - ComponentLocation).ProjectOnTo(ComponentForward);
+    // Project the vector from the character to the climbable surface onto the forward direction
+    const FVector ProjectedCharacterToSurface = (CurrentClimbableSurfaceLocation - ComponentLocation).ProjectOnTo(ComponentForward);
 
+    // Calculate a vector that "snaps" the character to the climbable surface
     const FVector SnapVector = -CurrentClimbableSurfaceNormal * ProjectedCharacterToSurface.Length();
 
+    // Move the component based on the snap vector, time, and maximum climb speed
     UpdatedComponent->MoveComponent(
-        SnapVector*DeltaTime*MaxClimbSpeed,
+        SnapVector * DeltaTime * MaxClimbSpeed,
         UpdatedComponent->GetComponentQuat(),
         true);
 }
+
 
 bool UCustomMovementComponent::IsClimbing() const
 {   
@@ -259,9 +298,9 @@ bool UCustomMovementComponent::TraceClimableSurfaces()
     const FVector Start = UpdatedComponent->GetComponentLocation() + StartOffset;
     const FVector End = Start + UpdatedComponent->GetForwardVector();
 
-    ClimableSurfacesTracedResults = DoCapsuleTraceMultiByObject(Start, End, true);
+    ClimbableSurfacesTracedResults = DoCapsuleTraceMultiByObject(Start, End, true);
     
-    return !ClimableSurfacesTracedResults.IsEmpty();
+    return !ClimbableSurfacesTracedResults.IsEmpty();
 }
 
 FHitResult UCustomMovementComponent::TraceFromEyeHeight(float TraceDistance, float TraceStartOffset)
