@@ -69,7 +69,7 @@ void AClimbingSystemCharacter::BeginPlay()
 		}
 	}
 
-	debugging::Print(TEXT("Debugging working"));
+	// debugging::Print(TEXT("Debugging working"));
 }
 
 //////////////////////////////////////////////////////////////////////////

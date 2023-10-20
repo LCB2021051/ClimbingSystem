@@ -127,12 +127,8 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
     {   
         if(CanStartClimbing()){
             //enter climb state   
-            Debug::Print(TEXT("Can Start Climbing"));
+            // Debug::Print(TEXT("Can Start Climbing"));
             StartClimbing();
-        }
-        else{
-            //stop climbing
-            Debug::Print(TEXT("Can Not Start Climbing"));
         }
     }
     else{
@@ -298,7 +294,7 @@ bool UCustomMovementComponent::TraceClimableSurfaces()
     const FVector Start = UpdatedComponent->GetComponentLocation() + StartOffset;
     const FVector End = Start + UpdatedComponent->GetForwardVector();
 
-    ClimbableSurfacesTracedResults = DoCapsuleTraceMultiByObject(Start, End, true);
+    ClimbableSurfacesTracedResults = DoCapsuleTraceMultiByObject(Start, End);
     
     return !ClimbableSurfacesTracedResults.IsEmpty();
 }
