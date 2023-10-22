@@ -167,6 +167,7 @@ void UCustomMovementComponent::StopClimbing()
 {   
     SetMovementMode(MOVE_Falling);
 }
+
 void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
 {   
     if (deltaTime < MIN_TICK_TIME)
@@ -178,13 +179,20 @@ void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
     TraceClimableSurfaces();
     ProcessClimbableSurfaceInfo();
 
-
 	/*Check if we should stop climbing*/
-    if(CheckShouldStopClimbing())
+    if(CheckShouldStopClimbing() || CheckHasReahedFloor())
     {
         StopClimbing();
     }
 
+    if(CheckHasReachedLedge())
+    {
+        Debug::Print(TEXT("Has Reached Ledge"),FColor::Green,1);
+    }
+    else
+    {
+        Debug::Print(TEXT("Has NOT Reached Ledge"),FColor::Green,1);
+    }
 
 	RestorePreAdditiveRootMotionVelocity();
 
@@ -251,6 +259,75 @@ bool UCustomMovementComponent::CheckShouldStopClimbing()
 
     return false;
 }
+
+bool UCustomMovementComponent::CheckHasReahedFloor()
+{
+    // Define a vector pointing downwards based on the component's up vector
+    const FVector DownVector = -UpdatedComponent->GetUpVector();
+
+    // Offset the start position by moving down 50 units
+    const FVector StartOffset = DownVector * 50.f;
+
+    // Calculate the start and end positions for the capsule trace
+    const FVector Start = UpdatedComponent->GetComponentLocation() + StartOffset;
+    const FVector End = Start + DownVector;
+
+    // Perform a capsule trace to detect the floor hits
+    TArray<FHitResult> PossibleFloorHits = DoCapsuleTraceMultiByObject(Start, End);
+
+    // If no floor hits, return false
+    if (PossibleFloorHits.IsEmpty()) return false;
+
+    // Iterate through the possible floor hits
+    for (const FHitResult& PossibleFloorHit : PossibleFloorHits)
+    {
+        // Check if the floor is reached based on certain conditions
+        const bool bFloorReached = FVector::Parallel(-PossibleFloorHit.ImpactNormal, FVector::UpVector) &&
+            GetUnrotatedClimbVelocity().Z < -10.f;
+
+        // If the floor is reached, return true
+        if (bFloorReached) return true;
+    }
+
+    // If no matching floor conditions found, return false
+    return false;
+}
+
+bool UCustomMovementComponent::CheckHasReachedLedge()
+{
+    // Get the location of the component
+    const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+
+    // Calculate the eye height offset based on the up vector and base eye height
+    const FVector EyeHeightOffset = UpdatedComponent->GetUpVector() * CharacterOwner->BaseEyeHeight * 1.5f;
+
+    // Define the start position for the line trace
+    const FVector Start = ComponentLocation + EyeHeightOffset;
+
+    // Calculate the end position for the line trace
+    const FVector End = Start + UpdatedComponent->GetForwardVector() * 100.f;
+
+    FHitResult EyeHit = DoLineTraceSingleByObject(Start, End, true);
+
+    if(!EyeHit.bBlockingHit)
+    {
+        // Extend the end position downward to check for a ledge
+        const FVector End2 = End + -UpdatedComponent->GetUpVector() * 50.f;
+
+        // Perform a line trace to detect a ledge hit
+        FHitResult LedgeHit = DoLineTraceSingleByObject(End, End2, true);
+
+        // Check if a ledge hit occurred
+        if (!LedgeHit.bBlockingHit) return false;
+
+        // Check if the surface normal is parallel to the up vector and the climb velocity is sufficient
+        return FVector::Parallel(-LedgeHit.ImpactNormal, FVector::UpVector) && GetUnrotatedClimbVelocity().Z > 10.f;
+    
+    }
+
+    return false;
+}
+
 
 FQuat UCustomMovementComponent::GetClimbRotation(float DeltaTime)
 {   
@@ -345,6 +422,9 @@ void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage *Montage, bool b
 
 FVector UCustomMovementComponent::GetUnrotatedClimbVelocity() const
 {
-    return UKismetMathLibrary::Quat_UnrotateVector(UpdatedComponent->GetComponentQuat(),Velocity);
+    // Unrotate the velocity vector using the component's quaternion
+    // This is done to get the velocity in the component's local space without rotation
+    return UKismetMathLibrary::Quat_UnrotateVector(UpdatedComponent->GetComponentQuat(), Velocity);
 }
+
 #pragma endregion
