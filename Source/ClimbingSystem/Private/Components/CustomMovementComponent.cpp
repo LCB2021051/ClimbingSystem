@@ -6,9 +6,22 @@
 #include "ClimbingSystem/ClimbingSystemCharacter.h"
 #include "ClimbingSystem/DebugHelper.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 
+
+void UCustomMovementComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    OwningPlayerAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+    if(OwningPlayerAnimInstance)
+    {
+        OwningPlayerAnimInstance->OnMontageEnded.AddDynamic(this,&UCustomMovementComponent::OnClimbMontageEnded);
+        OwningPlayerAnimInstance->OnMontageBlendingOut.AddDynamic(this,&UCustomMovementComponent::OnClimbMontageEnded);
+    }
+}
 
 void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
@@ -128,7 +141,7 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
         if(CanStartClimbing()){
             //enter climb state   
             // Debug::Print(TEXT("Can Start Climbing"));
-            StartClimbing();
+            PlayClimbMontage(IdleToClimbontage);
         }
     }
     else{
@@ -282,10 +295,12 @@ void UCustomMovementComponent::SnapMovementToClimableSurfaces(float DeltaTime)
 }
 
 
+
 bool UCustomMovementComponent::IsClimbing() const
 {   
     return MovementMode == MOVE_Custom && CustomMovementMode == ECustomMovementMode::MOVE_Climb;
 }
+
 
 // trace for climable surfaces, reteun true if there are indeed vali surfaces otherwise false
 bool UCustomMovementComponent::TraceClimableSurfaces()
@@ -310,6 +325,26 @@ FHitResult UCustomMovementComponent::TraceFromEyeHeight(float TraceDistance, flo
     return DoLineTraceSingleByObject(Start,End);
 }
 
+void UCustomMovementComponent::PlayClimbMontage(UAnimMontage *MontageToPlay)
+{
+    if(!MontageToPlay) return;
+    if(!OwningPlayerAnimInstance) return;
+    if(OwningPlayerAnimInstance->IsAnyMontagePlaying()) return;
 
+    OwningPlayerAnimInstance->Montage_Play(MontageToPlay);
 
+}
+
+void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage *Montage, bool bInterrupted)
+{
+    if(Montage == IdleToClimbontage)
+    {
+        StartClimbing();
+    }
+}
+
+FVector UCustomMovementComponent::GetUnrotatedClimbVelocity() const
+{
+    return UKismetMathLibrary::Quat_UnrotateVector(UpdatedComponent->GetComponentQuat(),Velocity);
+}
 #pragma endregion
