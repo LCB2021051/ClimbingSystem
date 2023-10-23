@@ -80,6 +80,18 @@ float UCustomMovementComponent::GetMaxAcceleration() const
     }
 }
 
+FVector UCustomMovementComponent::ConstrainAnimRootMotionVelocity(const FVector &RootMotionVelocity, const FVector &CurrentVelocity) const
+{
+    const bool bIsPlayingRMMontrage = (IsFalling() && OwningPlayerAnimInstance && OwningPlayerAnimInstance->IsAnyMontagePlaying());
+    if(bIsPlayingRMMontrage)
+    {
+        return RootMotionVelocity;
+    }
+    else{
+        return Super::ConstrainAnimRootMotionVelocity(RootMotionVelocity, CurrentVelocity);
+    }
+}
+
 #pragma region ClimbTraces
 
 TArray<FHitResult> UCustomMovementComponent::DoCapsuleTraceMultiByObject(const FVector &Start, const FVector &End, bool bShowDebugShape, bool bDrawPresistantShapes)
@@ -141,7 +153,7 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
         if(CanStartClimbing()){
             //enter climb state   
             // Debug::Print(TEXT("Can Start Climbing"));
-            PlayClimbMontage(IdleToClimbontage);
+            PlayClimbMontage(IdleToClimbMontage);
         }
     }
     else{
@@ -187,12 +199,9 @@ void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
 
     if(CheckHasReachedLedge())
     {
-        Debug::Print(TEXT("Has Reached Ledge"),FColor::Green,1);
+        PlayClimbMontage(ClimbToTopMontage);
     }
-    else
-    {
-        Debug::Print(TEXT("Has NOT Reached Ledge"),FColor::Green,1);
-    }
+   
 
 	RestorePreAdditiveRootMotionVelocity();
 
@@ -281,7 +290,7 @@ bool UCustomMovementComponent::CheckHasReahedFloor()
     // Iterate through the possible floor hits
     for (const FHitResult& PossibleFloorHit : PossibleFloorHits)
     {
-        // Check if the floor is reached based on certain conditions
+        // Check if the floor is walkable based on certain conditions
         const bool bFloorReached = FVector::Parallel(-PossibleFloorHit.ImpactNormal, FVector::UpVector) &&
             GetUnrotatedClimbVelocity().Z < -10.f;
 
@@ -295,36 +304,23 @@ bool UCustomMovementComponent::CheckHasReahedFloor()
 
 bool UCustomMovementComponent::CheckHasReachedLedge()
 {
-    // Get the location of the component
-    const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
-
-    // Calculate the eye height offset based on the up vector and base eye height
-    const FVector EyeHeightOffset = UpdatedComponent->GetUpVector() * CharacterOwner->BaseEyeHeight * 1.5f;
-
-    // Define the start position for the line trace
-    const FVector Start = ComponentLocation + EyeHeightOffset;
-
-    // Calculate the end position for the line trace
-    const FVector End = Start + UpdatedComponent->GetForwardVector() * 100.f;
-
-    FHitResult EyeHit = DoLineTraceSingleByObject(Start, End, true);
-
-    if(!EyeHit.bBlockingHit)
+    FHitResult LedgeHitResult = TraceFromEyeHeight(100.f,50.f);
+    if(!LedgeHitResult.bBlockingHit)
     {
-        // Extend the end position downward to check for a ledge
-        const FVector End2 = End + -UpdatedComponent->GetUpVector() * 50.f;
+        const FVector WalkableSurfaceTraceStart = LedgeHitResult.TraceEnd;
+        const FVector DownVector = -UpdatedComponent->GetUpVector();
+        const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
 
-        // Perform a line trace to detect a ledge hit
-        FHitResult LedgeHit = DoLineTraceSingleByObject(End, End2, true);
+        FHitResult WalkableSurfaceHitResult = DoLineTraceSingleByObject(WalkableSurfaceTraceStart,WalkableSurfaceTraceEnd,true);
 
-        // Check if a ledge hit occurred
-        if (!LedgeHit.bBlockingHit) return false;
+        if(WalkableSurfaceHitResult.bBlockingHit)
+        {
+            const bool bLedgeReached = FVector::Parallel(-WalkableSurfaceHitResult.ImpactNormal, FVector::UpVector) &&
+            GetUnrotatedClimbVelocity().Z > 10.f;
 
-        // Check if the surface normal is parallel to the up vector and the climb velocity is sufficient
-        return FVector::Parallel(-LedgeHit.ImpactNormal, FVector::UpVector) && GetUnrotatedClimbVelocity().Z > 10.f;
-    
+            return bLedgeReached;
+        }
     }
-
     return false;
 }
 
@@ -414,9 +410,14 @@ void UCustomMovementComponent::PlayClimbMontage(UAnimMontage *MontageToPlay)
 
 void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage *Montage, bool bInterrupted)
 {
-    if(Montage == IdleToClimbontage)
+    if(Montage == IdleToClimbMontage)
     {
         StartClimbing();
+    }
+    else
+    {
+        SetMovementMode(MOVE_Walking);
+
     }
 }
 

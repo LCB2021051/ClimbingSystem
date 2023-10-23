@@ -36,6 +36,8 @@ protected:
 	virtual void PhysCustom(float deltaTime, int32 Iterations) override;
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
+	virtual FVector ConstrainAnimRootMotionVelocity(const FVector& RootMotionVelocity, const FVector& CurrentVelocity) const override;
+
 
 #pragma endregion
 
@@ -112,7 +114,10 @@ private:
 	float MaxClimbAcceleration = 100.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
-	UAnimMontage* IdleToClimbontage;
+	UAnimMontage* IdleToClimbMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
+	UAnimMontage* ClimbToTopMontage;
 
 #pragma endregion
 
