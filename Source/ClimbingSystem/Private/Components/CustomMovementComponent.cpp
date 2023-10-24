@@ -11,17 +11,27 @@
 
 
 
+// Called when the game starts or when spawned
 void UCustomMovementComponent::BeginPlay()
 {
+    // Call the parent class's BeginPlay function
     Super::BeginPlay();
 
+    // Get the animation instance associated with the owning player's mesh
     OwningPlayerAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
-    if(OwningPlayerAnimInstance)
+
+    // Check if the animation instance is valid
+    if (OwningPlayerAnimInstance)
     {
-        OwningPlayerAnimInstance->OnMontageEnded.AddDynamic(this,&UCustomMovementComponent::OnClimbMontageEnded);
-        OwningPlayerAnimInstance->OnMontageBlendingOut.AddDynamic(this,&UCustomMovementComponent::OnClimbMontageEnded);
+        // Bind functions to animation montage events
+        // This function will be called when a montage ends
+        OwningPlayerAnimInstance->OnMontageEnded.AddDynamic(this, &UCustomMovementComponent::OnClimbMontageEnded);
+        
+        // This function will be called when a montage is blending out
+        OwningPlayerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &UCustomMovementComponent::OnClimbMontageEnded);
     }
 }
+
 
 void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
@@ -31,34 +41,53 @@ void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 
 }
+
+// Called when the movement mode of the character changes
 void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
-{   
-    if(IsClimbing()){
+{
+    // Check if the character is in climbing mode
+    if (IsClimbing())
+    {
+        // Cannot rotate now
         bOrientRotationToMovement = false;
+        // Half the Capsule Height
         CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(48.f);
     }
-    if(PreviousMovementMode == MOVE_Custom && PreviousCustomMode == ECustomMovementMode::MOVE_Climb){
-        bOrientRotationToMovement = true;
-        CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(96.f);
 
+    // Check if the previous movement mode was custom climbing mode
+    if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == ECustomMovementMode::MOVE_Climb)
+    {
+        // Restore properties when exiting climbing mode
+        bOrientRotationToMovement = true;
+        CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(96.f); // reset capsule size 
+
+        // Reset rotation to a clean standing position
         const FRotator DirtyRotation = UpdatedComponent->GetComponentRotation();
-        const FRotator CleanStandRotation = FRotator(0.f,DirtyRotation.Yaw,0.f);
+        const FRotator CleanStandRotation = FRotator(0.f, DirtyRotation.Yaw, 0.f);
         UpdatedComponent->SetRelativeRotation(CleanStandRotation);
 
+        // Stop movement immediately when exiting climbing mode
         StopMovementImmediately();
     }
 
-    Super::OnMovementModeChanged( PreviousMovementMode, PreviousCustomMode);
+    // Call the parent class's OnMovementModeChanged function
+    Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
 }
 
+
+// Custom physics update for the character
 void UCustomMovementComponent::PhysCustom(float deltaTime, int32 Iterations)
 {   
+    // Check if the character is in climbing mode
     if(IsClimbing()){
-        PhysClimb(deltaTime,Iterations);
+        // Perform custom climbing physics
+        PhysClimb(deltaTime, Iterations);
     }
 
-    Super::PhysCustom(deltaTime,Iterations);
+    // Call the parent class's PhysCustom function
+    Super::PhysCustom(deltaTime, Iterations);
 }
+
 
 float UCustomMovementComponent::GetMaxSpeed() const
 {   
@@ -80,30 +109,46 @@ float UCustomMovementComponent::GetMaxAcceleration() const
     }
 }
 
+// Constrain the animation root motion velocity based on current conditions
 FVector UCustomMovementComponent::ConstrainAnimRootMotionVelocity(const FVector &RootMotionVelocity, const FVector &CurrentVelocity) const
 {
+    // Check if the character is falling and playing any animation montage
     const bool bIsPlayingRMMontrage = (IsFalling() && OwningPlayerAnimInstance && OwningPlayerAnimInstance->IsAnyMontagePlaying());
+
+    // If playing a root motion montage during a fall, allow the animation root motion velocity
     if(bIsPlayingRMMontrage)
     {
         return RootMotionVelocity;
     }
-    else{
+    else
+    {
+        // If not playing a root motion montage during a fall, call the parent class's ConstrainAnimRootMotionVelocity
         return Super::ConstrainAnimRootMotionVelocity(RootMotionVelocity, CurrentVelocity);
     }
 }
 
+
 #pragma region ClimbTraces
 
+// Perform a capsule trace for multiple objects and return the hit results
 TArray<FHitResult> UCustomMovementComponent::DoCapsuleTraceMultiByObject(const FVector &Start, const FVector &End, bool bShowDebugShape, bool bDrawPresistantShapes)
 {   
+    // Array to store the hit results from the capsule trace
     TArray<FHitResult> OutCapsuleTraceHitResults; 
+
+    // Set the default debug trace type to none
     EDrawDebugTrace::Type DebugTraceType = EDrawDebugTrace::None;
+
+    // Check if debug shapes should be shown
     if(bShowDebugShape){
+        // Set debug trace type to one frame or persistent based on the flag
         DebugTraceType = EDrawDebugTrace::ForOneFrame;
         if(bDrawPresistantShapes){
             DebugTraceType = EDrawDebugTrace::Persistent;
         }
     }
+
+    // Perform capsule trace for multiple objects
     UKismetSystemLibrary::CapsuleTraceMultiForObjects(
         this,
         Start,
@@ -117,19 +162,31 @@ TArray<FHitResult> UCustomMovementComponent::DoCapsuleTraceMultiByObject(const F
         OutCapsuleTraceHitResults,
         false
     );
+
+    // Return the array of hit results
     return OutCapsuleTraceHitResults;
 }
 
+
+// Perform a line trace for a single object and return the hit result
 FHitResult UCustomMovementComponent::DoLineTraceSingleByObject(const FVector &Start, const FVector &End, bool bShowDebugShape, bool bDrawPresistantShapes)
 {       
+    // Hit result structure to store information about the hit
     FHitResult OutHit;
+
+    // Set the default debug trace type to none
     EDrawDebugTrace::Type DebugTraceType = EDrawDebugTrace::None;
+
+    // Check if debug shapes should be shown
     if(bShowDebugShape){
+        // Set debug trace type to one frame or persistent based on the flag
         DebugTraceType = EDrawDebugTrace::ForOneFrame;
         if(bDrawPresistantShapes){
             DebugTraceType = EDrawDebugTrace::Persistent;
         }
     }
+
+    // Perform line trace for a single object
     UKismetSystemLibrary::LineTraceSingleForObjects(
         this,
         Start,
@@ -141,8 +198,11 @@ FHitResult UCustomMovementComponent::DoLineTraceSingleByObject(const FVector &St
         OutHit,
         false
     );
+
+    // Return the hit result structure
     return OutHit;
 }
+
 #pragma endregion
 
 #pragma region ClimbCore
@@ -164,7 +224,7 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
 
 bool UCustomMovementComponent::CanStartClimbing()
 {
-    if(IsFalling())return false;
+    // if(IsFalling())return false;
     if(!TraceClimableSurfaces()) return false;
     if(!TraceFromEyeHeight(100.f).bBlockingHit) return false;
 
@@ -180,60 +240,77 @@ void UCustomMovementComponent::StopClimbing()
     SetMovementMode(MOVE_Falling);
 }
 
+// Custom physics handling for climbing movement mode
 void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
 {   
+    // Ensure deltaTime is above a minimum threshold to avoid division by zero
     if (deltaTime < MIN_TICK_TIME)
 	{
 		return;
 	}
 
-	/*Process all the climbable surfaces info*/
+	/* Process all climbable surfaces information */
     TraceClimableSurfaces();
     ProcessClimbableSurfaceInfo();
 
-	/*Check if we should stop climbing*/
+	/* Check if we should stop climbing */
     if(CheckShouldStopClimbing() || CheckHasReahedFloor())
     {
         StopClimbing();
     }
 
+    // Check if the character has reached a ledge during climbing
     if(CheckHasReachedLedge())
     {
+        // Play the climb to top montage
         PlayClimbMontage(ClimbToTopMontage);
     }
    
 
-	RestorePreAdditiveRootMotionVelocity();
+    /*
+        This line of code is essentially instructing the system to bring back
+        the original velocity of the character before any additional motion (root motion) is applied.
+    */
+    RestorePreAdditiveRootMotionVelocity();
 
-	if( !HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity() )
-	{	//Define the max climb speed and acceleration
-		CalcVelocity(deltaTime, 0.f, true, MaxBreakClimbDeceleration);
-	}
+    // If there is no animation root motion or override velocity
+    if( !HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity() )
+    {
+        // Calculate velocity based on max climb speed and acceleration
+        CalcVelocity(deltaTime, 0.f, true, MaxBreakClimbDeceleration);
+    }
 
-	ApplyRootMotionToVelocity(deltaTime);
+    // Apply root motion to velocity
+    ApplyRootMotionToVelocity(deltaTime);
 
-	FVector OldLocation = UpdatedComponent->GetComponentLocation();
-	const FVector Adjusted = Velocity * deltaTime;
-	FHitResult Hit(1.f);
+    // Save the current location
+    FVector OldLocation = UpdatedComponent->GetComponentLocation();
+    // Calculate adjusted movement based on velocity and time
+    const FVector Adjusted = Velocity * deltaTime;
+    FHitResult Hit(1.f);
 
-	//Handle climb rotation
-	SafeMoveUpdatedComponent(Adjusted, GetClimbRotation(deltaTime), true, Hit);
+    // Handle climb rotation
+    SafeMoveUpdatedComponent(Adjusted, GetClimbRotation(deltaTime), true, Hit);
 
-	if (Hit.Time < 1.f)
-	{
-		//adjust and try again
-		HandleImpact(Hit, deltaTime, Adjusted);
-		SlideAlongSurface(Adjusted, (1.f-Hit.Time), Hit.Normal, Hit, true);
-	}
+    // If there was a hit during movement
+    if (Hit.Time < 1.f)
+    {
+        // Adjust and try again to handle surface interactions
+        HandleImpact(Hit, deltaTime, Adjusted);
+        SlideAlongSurface(Adjusted, (1.f-Hit.Time), Hit.Normal, Hit, true);
+    }
 
-	if(!HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity() )
-	{
-		Velocity = (UpdatedComponent->GetComponentLocation() - OldLocation) / deltaTime;
-	}
+    // If there is no animation root motion or override velocity
+    if(!HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity() )
+    {
+        // Calculate velocity based on the updated location
+        Velocity = (UpdatedComponent->GetComponentLocation() - OldLocation) / deltaTime;
+    }
 
-	/*Snap movement to climbable surfaces*/
+    /* Snap movement to climbable surfaces */
     SnapMovementToClimableSurfaces(deltaTime);
 }
+
 
 void UCustomMovementComponent::ProcessClimbableSurfaceInfo()
 {
