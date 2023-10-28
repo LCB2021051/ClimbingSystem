@@ -252,7 +252,7 @@ bool UCustomMovementComponent::CanClimbDownLedge()
     const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
 
     // Perform a line trace to detect a walkable surface below the character
-    FHitResult WalkableSurfaceHit = DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd, true);
+    FHitResult WalkableSurfaceHit = DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd);
 
     // Define the starting point for the ledge trace after finding a walkable surface
     const FVector LedgeTraceStart = WalkableSurfaceHit.TraceStart + ComponentForward * ClimbDownLedgeTraceOffset;
@@ -260,7 +260,7 @@ bool UCustomMovementComponent::CanClimbDownLedge()
     const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 200.f ;
 
     // Perform another line trace to check for a ledge below the walkable surface
-    FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd, true);
+    FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd);
 
     // If there is a walkable surface hit but no ledge hit, return true (indicating the ability to climb down)
     if(WalkableSurfaceHit.bBlockingHit && !LedgeTraceHit.bBlockingHit)
@@ -429,7 +429,7 @@ bool UCustomMovementComponent::CheckHasReachedLedge()
         const FVector DownVector = -UpdatedComponent->GetUpVector();
         const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
 
-        FHitResult WalkableSurfaceHitResult = DoLineTraceSingleByObject(WalkableSurfaceTraceStart,WalkableSurfaceTraceEnd,true);
+        FHitResult WalkableSurfaceHitResult = DoLineTraceSingleByObject(WalkableSurfaceTraceStart,WalkableSurfaceTraceEnd);
 
         if(WalkableSurfaceHitResult.bBlockingHit)
         {
