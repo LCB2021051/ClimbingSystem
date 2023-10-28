@@ -257,7 +257,7 @@ bool UCustomMovementComponent::CanClimbDownLedge()
     // Define the starting point for the ledge trace after finding a walkable surface
     const FVector LedgeTraceStart = WalkableSurfaceHit.TraceStart + ComponentForward * ClimbDownLedgeTraceOffset;
     // Define the ending point for the ledge trace
-    const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 300.f ;
+    const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 200.f ;
 
     // Perform another line trace to check for a ledge below the walkable surface
     FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd, true);
