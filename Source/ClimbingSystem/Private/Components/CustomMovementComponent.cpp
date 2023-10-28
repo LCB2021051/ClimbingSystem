@@ -38,6 +38,7 @@ void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
     Super::TickComponent(DeltaTime,  TickType, ThisTickFunction);
     // TraceClimableSurfaces();
     // TraceFromEyeHeight(100.f);
+    CanClimbDownLedge();
 
 
 }
@@ -215,6 +216,10 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
             // Debug::Print(TEXT("Can Start Climbing"));
             PlayClimbMontage(IdleToClimbMontage);
         }
+        else if(CanClimbDownLedge())
+        {
+            PlayClimbMontage(ClimbDownLedgeMontage);
+        }
     }
     else{
         StopClimbing();
@@ -230,6 +235,43 @@ bool UCustomMovementComponent::CanStartClimbing()
 
     return true;
 }
+
+bool UCustomMovementComponent::CanClimbDownLedge()
+{   
+    // Check if the character is currently falling
+    if(IsFalling()) return false;
+
+    // Get the current location, forward vector, and downward vector of the character
+    const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+    const FVector ComponentForward = UpdatedComponent->GetForwardVector();
+    const FVector DownVector = -UpdatedComponent->GetUpVector();
+
+    // Define the starting point for the walkable surface trace
+    const FVector WalkableSurfaceTraceStart = ComponentLocation +  ComponentForward * ClimbDownWalkableSurfaceTraceOffset;
+    // Define the ending point for the walkable surface trace
+    const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
+
+    // Perform a line trace to detect a walkable surface below the character
+    FHitResult WalkableSurfaceHit = DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd, true);
+
+    // Define the starting point for the ledge trace after finding a walkable surface
+    const FVector LedgeTraceStart = WalkableSurfaceHit.TraceStart + ComponentForward * ClimbDownLedgeTraceOffset;
+    // Define the ending point for the ledge trace
+    const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 300.f ;
+
+    // Perform another line trace to check for a ledge below the walkable surface
+    FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd, true);
+
+    // If there is a walkable surface hit but no ledge hit, return true (indicating the ability to climb down)
+    if(WalkableSurfaceHit.bBlockingHit && !LedgeTraceHit.bBlockingHit)
+    {
+        return true;
+    }
+    
+    // Otherwise, return false
+    return false;
+}
+
 
 void UCustomMovementComponent::StartClimbing()
 {   
@@ -265,7 +307,6 @@ void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
         // Play the climb to top montage
         PlayClimbMontage(ClimbToTopMontage);
     }
-   
 
     /*
         This line of code is essentially instructing the system to bring back
@@ -487,14 +528,14 @@ void UCustomMovementComponent::PlayClimbMontage(UAnimMontage *MontageToPlay)
 
 void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage *Montage, bool bInterrupted)
 {
-    if(Montage == IdleToClimbMontage)
+    if(Montage == IdleToClimbMontage || Montage == ClimbDownLedgeMontage)
     {
         StartClimbing();
+        StopMovementImmediately();
     }
-    else
+    if(Montage == ClimbToTopMontage)
     {
         SetMovementMode(MOVE_Walking);
-
     }
 }
 
