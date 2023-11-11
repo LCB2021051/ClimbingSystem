@@ -9,6 +9,7 @@
 class UAnimMontage;
 class UAnimInstance;
 class UKismetMathLibrary;
+class AClimbingSystemCharacter; 
 
 UENUM(BlueprintType)
 namespace ECustomMovementMode
@@ -72,6 +73,9 @@ private:
 
 	bool CheckHasReachedLedge();
 
+	void TryStartVaulting();
+
+	bool CanStartVaulting(FVector& OutVaultStartPos,FVector& OutVaultEndPos);
 
 	FQuat GetClimbRotation(float DeltaTime);
 
@@ -81,6 +85,9 @@ private:
 
 	UFUNCTION()
 	void OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+	void SetMotionWarpTarget(const FName& InWarpTargetName, const FVector& InTargetPosition);
 
 #pragma endregion
 
@@ -94,6 +101,10 @@ private:
 
 	UPROPERTY()
 	UAnimInstance* OwningPlayerAnimInstance;
+
+	UPROPERTY()
+	AClimbingSystemCharacter* OwningPlayerCharacter;
+
 
 #pragma endregion
 
@@ -130,6 +141,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
 	UAnimMontage* ClimbDownLedgeMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
+	UAnimMontage* VaultMontage;
 
 #pragma endregion
 

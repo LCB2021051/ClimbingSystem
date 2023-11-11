@@ -8,6 +8,11 @@
 #include "ClimbingSystemCharacter.generated.h"
 
 class UCustomMovementComponent;
+class USpringArmComponent;
+class UMotionWarpingComponent;
+class UCameraComponent;
+class UInputMappingContext;
+class UInputAction;
 
 UCLASS(config=Game)
 class AClimbingSystemCharacter : public ACharacter
@@ -18,29 +23,38 @@ public:
 	AClimbingSystemCharacter(const FObjectInitializer& ObjectInitializer);
 
 private:
+
+#pragma region Components
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+	USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
+	UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UMotionWarpingComponent* MotionWarpingComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	class UCustomMovementComponent* CustomMovementComponent;
-
+	UCustomMovementComponent* CustomMovementComponent;
+#pragma endregion
+	
+#pragma region InputActions
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* DefaultMappingContext;
+	UInputMappingContext* DefaultMappingContext;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpAction;
+	UInputAction* JumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* MoveAction;
+	UInputAction* MoveAction;
+#pragma endregion
 
+#pragma region InputCallback
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -58,7 +72,8 @@ private:
 	class UInputAction* ClimbAction;
 
 	void onClimbActionStarted(const FInputActionValue& Value);
-
+#pragma endregion
+	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -74,5 +89,6 @@ public:
 	
 	FORCEINLINE class UCustomMovementComponent* GetCustomeMovementComponent() const { return CustomMovementComponent; }
 	
+	FORCEINLINE class UMotionWarpingComponent* GetMotionWarpingComponent() const {return MotionWarpingComponent; }
 };
 

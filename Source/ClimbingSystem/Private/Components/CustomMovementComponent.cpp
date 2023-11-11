@@ -7,6 +7,10 @@
 #include "ClimbingSystem/DebugHelper.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "ClimbingSystem/ClimbingSystemCharacter.h"
+#include "MotionWarpingComponent.h"
+
+
 
 
 
@@ -30,6 +34,8 @@ void UCustomMovementComponent::BeginPlay()
         // This function will be called when a montage is blending out
         OwningPlayerAnimInstance->OnMontageBlendingOut.AddDynamic(this, &UCustomMovementComponent::OnClimbMontageEnded);
     }
+
+    OwningPlayerCharacter = Cast<AClimbingSystemCharacter>(CharacterOwner);
 }
 
 
@@ -39,8 +45,6 @@ void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
     // TraceClimableSurfaces();
     // TraceFromEyeHeight(100.f);
     CanClimbDownLedge();
-
-
 }
 
 // Called when the movement mode of the character changes
@@ -220,8 +224,11 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
         {
             PlayClimbMontage(ClimbDownLedgeMontage);
         }
+        else{
+            TryStartVaulting();
+        }
     }
-    else{
+    if(!bEnableClimb){
         StopClimbing();
     }
 
@@ -252,7 +259,7 @@ bool UCustomMovementComponent::CanClimbDownLedge()
     const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
 
     // Perform a line trace to detect a walkable surface below the character
-    FHitResult WalkableSurfaceHit = DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd,true);
+    FHitResult WalkableSurfaceHit = DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd);
 
     // Define the starting point for the ledge trace after finding a walkable surface
     const FVector LedgeTraceStart = WalkableSurfaceHit.TraceStart + ComponentForward * ClimbDownLedgeTraceOffset;
@@ -260,7 +267,7 @@ bool UCustomMovementComponent::CanClimbDownLedge()
     const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 200.f ;
 
     // Perform another line trace to check for a ledge below the walkable surface
-    FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd,true);
+    FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd);
 
     // If there is a walkable surface hit but no ledge hit, return true (indicating the ability to climb down)
     if(WalkableSurfaceHit.bBlockingHit && !LedgeTraceHit.bBlockingHit)
@@ -442,6 +449,57 @@ bool UCustomMovementComponent::CheckHasReachedLedge()
     return false;
 }
 
+void UCustomMovementComponent::TryStartVaulting()
+{   
+    FVector VaultStartPos;
+    FVector VaultEndPos;
+    if(CanStartVaulting(VaultStartPos,VaultEndPos)){
+        // start vaulting
+        // Debug::Print(TEXT("Start Position : ") + VaultStartPos.ToCompactString());
+        // Debug::Print(TEXT("End Position : ") + VaultEndPos.ToCompactString());
+
+        SetMotionWarpTarget(FName("VaultStartPos"),VaultStartPos);
+        SetMotionWarpTarget(FName("VaultEndPos"),VaultEndPos);
+
+        StartClimbing();
+        PlayClimbMontage(VaultMontage);
+
+    }
+    else{
+        Debug::Print(TEXT("Unable to Vault"));
+
+    }
+}
+
+bool UCustomMovementComponent::CanStartVaulting(FVector& OutVaultStartPos,FVector& OutVaultEndPos)
+{   
+    if(IsFalling()) return false;
+
+    OutVaultStartPos = FVector::ZeroVector;
+    OutVaultEndPos = FVector::ZeroVector;
+
+    FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+    FVector ForwardVector = UpdatedComponent->GetForwardVector();
+    FVector UpVector = UpdatedComponent->GetUpVector();
+    FVector DownVector = -UpdatedComponent->GetUpVector();
+
+    for (int i = 0; i < 4; i++){
+        FVector Start = ComponentLocation + UpVector * 100.f + ForwardVector * 100.f * (i+1);
+        FVector End = Start + DownVector * 100.f * (i+1);
+        FHitResult Hit = DoLineTraceSingleByObject(Start,End);
+
+        if(i==0 && Hit.bBlockingHit){
+            OutVaultStartPos = Hit.ImpactPoint;
+        }
+        if(i==3 && Hit.bBlockingHit){
+            OutVaultEndPos = Hit.ImpactPoint;
+        }
+    }
+
+    if(OutVaultEndPos != FVector::ZeroVector && OutVaultStartPos != FVector::ZeroVector) return true;
+
+    return false;
+}
 
 FQuat UCustomMovementComponent::GetClimbRotation(float DeltaTime)
 {   
@@ -533,10 +591,20 @@ void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage *Montage, bool b
         StartClimbing();
         StopMovementImmediately();
     }
-    if(Montage == ClimbToTopMontage)
+    if(Montage == ClimbToTopMontage || Montage == VaultMontage)
     {
         SetMovementMode(MOVE_Walking);
     }
+}
+
+void UCustomMovementComponent::SetMotionWarpTarget(const FName &InWarpTargetName, const FVector &InTargetPosition)
+{   
+    if(!OwningPlayerCharacter) return;
+    OwningPlayerCharacter->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(
+        InWarpTargetName,
+        InTargetPosition
+    );
+
 }
 
 FVector UCustomMovementComponent::GetUnrotatedClimbVelocity() const

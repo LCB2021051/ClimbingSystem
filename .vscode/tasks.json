@@ -272,6 +272,746 @@
 			}
 		},
 		{
+			"label": "ClimbingSystem Android Debug Build",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Debug",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Debug Cook+Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Debug",
+				"-ServerConfig=Debug",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Debug Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Debug Cook",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Debug",
+				"-ServerConfig=Debug",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Debug Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Debug Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Debug",
+				"-ServerConfig=Debug",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-DeploySoToDevice",
+				"-SkipCook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystem Android Debug Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Debug Rebuild",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Debug",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"dependsOn": [
+				"ClimbingSystem Android Debug Clean"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Debug Clean",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Debug",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android DebugGame Build",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"DebugGame",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android DebugGame Cook+Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=DebugGame",
+				"-ServerConfig=DebugGame",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android DebugGame Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android DebugGame Cook",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=DebugGame",
+				"-ServerConfig=DebugGame",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android DebugGame Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android DebugGame Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=DebugGame",
+				"-ServerConfig=DebugGame",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-DeploySoToDevice",
+				"-SkipCook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystem Android DebugGame Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android DebugGame Rebuild",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"DebugGame",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"dependsOn": [
+				"ClimbingSystem Android DebugGame Clean"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android DebugGame Clean",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"DebugGame",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Development Build",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Development",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Development Cook+Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Development",
+				"-ServerConfig=Development",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Development Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Development Cook",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Development",
+				"-ServerConfig=Development",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Development Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Development Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Development",
+				"-ServerConfig=Development",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-DeploySoToDevice",
+				"-SkipCook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystem Android Development Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Development Rebuild",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Development",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"dependsOn": [
+				"ClimbingSystem Android Development Clean"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Development Clean",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Development",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Test Build",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Test",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Test Cook+Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Test",
+				"-ServerConfig=Test",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Test Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Test Cook",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Test",
+				"-ServerConfig=Test",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Test Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Test Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Test",
+				"-ServerConfig=Test",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-DeploySoToDevice",
+				"-SkipCook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystem Android Test Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Test Rebuild",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Test",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"dependsOn": [
+				"ClimbingSystem Android Test Clean"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Test Clean",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Test",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Shipping Build",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Shipping",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Shipping Cook+Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Shipping",
+				"-ServerConfig=Shipping",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Shipping Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Shipping Cook",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Shipping",
+				"-ServerConfig=Shipping",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-Cook"
+			],
+			"dependsOn": [
+				"ClimbingSystemEditor Win64 Development Build",
+				"ClimbingSystem Android Shipping Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Shipping Deploy",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\RunUAT.bat",
+			"args": [
+				"BuildCookRun",
+				"-ScriptsForProject=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-Project=C:/Users/vivek/Desktop/Unreal_Projects/ClimbingSystem/ClimbingSystem.uproject",
+				"-noP4",
+				"-ClientConfig=Shipping",
+				"-ServerConfig=Shipping",
+				"-NoCompileEditor",
+				"-utf8output",
+				"-Platform=Android",
+				"-TargetPlatform=Android",
+				"-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:BlueprintNativizationMethod=Disabled",
+				"-Compressed",
+				"-IterativeCooking",
+				"-IterativeDeploy",
+				"-DeploySoToDevice",
+				"-SkipCook",
+				"-Stage",
+				"-Deploy"
+			],
+			"dependsOn": [
+				"ClimbingSystem Android Shipping Build"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Shipping Rebuild",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Build.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Shipping",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"dependsOn": [
+				"ClimbingSystem Android Shipping Clean"
+			],
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
+			"label": "ClimbingSystem Android Shipping Clean",
+			"group": "build",
+			"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+			"args": [
+				"ClimbingSystem",
+				"Android",
+				"Shipping",
+				"C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\ClimbingSystem.uproject",
+				"-waitmutex"
+			],
+			"problemMatcher": "$msCompile",
+			"type": "shell",
+			"options": {
+				"cwd": "C:\\Program Files\\Epic Games\\UE_5.2"
+			}
+		},
+		{
 			"label": "ClimbingSystemEditor Win64 Debug Build",
 			"group": "build",
 			"command": "Engine\\Build\\BatchFiles\\Build.bat",

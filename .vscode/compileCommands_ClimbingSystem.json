@@ -3,7 +3,7 @@
 		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\ClimbingSystem.Build.cs",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.261.rsp"
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
 		],
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
 	},
@@ -11,7 +11,7 @@
 		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\ClimbingSystem.cpp",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.261.rsp"
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
 		],
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
 	},
@@ -19,7 +19,7 @@
 		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\ClimbingSystem.h",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.261.rsp"
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
 		],
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
 	},
@@ -27,7 +27,7 @@
 		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\ClimbingSystemCharacter.cpp",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.261.rsp"
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
 		],
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
 	},
@@ -35,7 +35,7 @@
 		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\ClimbingSystemCharacter.h",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.261.rsp"
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
 		],
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
 	},
@@ -43,7 +43,7 @@
 		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\ClimbingSystemGameMode.cpp",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.261.rsp"
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
 		],
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
 	},
@@ -51,7 +51,63 @@
 		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\ClimbingSystemGameMode.h",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
-			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.261.rsp"
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\DebugHelper.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\Private\\AnimInstance\\CharacterAnimInstance.cpp",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\Private\\Components\\.cph\\.CustomMovementComponent.cpp_34b10ab9568e1f7b0fce735463918468.prob",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\Private\\Components\\CustomMovementComponent.cpp",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\Public\\AnimInstance\\CharacterAnimInstance.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\Public\\Components\\CustomMovementComponent.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\Source\\ClimbingSystem\\debugging.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\vivek\\Desktop\\Unreal_Projects\\ClimbingSystem\\.vscode\\compileCommands_ClimbingSystem\\ClimbingSystem.262.rsp"
 		],
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.2\\Engine\\Source"
 	}
