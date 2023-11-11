@@ -10,11 +10,6 @@
 #include "ClimbingSystem/ClimbingSystemCharacter.h"
 #include "MotionWarpingComponent.h"
 
-
-
-
-
-
 // Called when the game starts or when spawned
 void UCustomMovementComponent::BeginPlay()
 {
@@ -57,6 +52,8 @@ void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovem
         bOrientRotationToMovement = false;
         // Half the Capsule Height
         CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(48.f);
+
+        OnEnterClimbStateDelegate.ExecuteIfBound();
     }
 
     // Check if the previous movement mode was custom climbing mode
@@ -73,6 +70,8 @@ void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovem
 
         // Stop movement immediately when exiting climbing mode
         StopMovementImmediately();
+ 
+        OnExitClimbStateDelegate.ExecuteIfBound();
     }
 
     // Call the parent class's OnMovementModeChanged function

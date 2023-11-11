@@ -41,9 +41,22 @@ private:
 #pragma endregion
 	
 #pragma region InputActions
+
+	void OnPlayerEnterClimbState();
+
+	void OnPlayerExitClimbState();
+
+	void AddInputMappingContext(UInputMappingContext* ContyextToAdd,int32 IntPriority);
+	void RemoveInputMappingContext(UInputMappingContext* ContextToRemove);
+
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
+
+	/** ClimbMappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* ClimbMappingContext;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -52,25 +65,26 @@ private:
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
-#pragma endregion
 
-#pragma region InputCallback
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
-
-	void HandleGroundMovementInput(const FInputActionValue& Value);
-	void HandleClimbMovementInput(const FInputActionValue& Value);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ClimbMoveAction;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ClimbAction;
+#pragma endregion
+
+#pragma region InputCallback
+
+	void HandleGroundMovementInput(const FInputActionValue& Value);
+	void HandleClimbMovementInput(const FInputActionValue& Value);
+
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* ClimbAction;
-
 	void onClimbActionStarted(const FInputActionValue& Value);
 #pragma endregion
 	
