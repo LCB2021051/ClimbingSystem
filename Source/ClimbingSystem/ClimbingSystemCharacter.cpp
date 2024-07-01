@@ -124,6 +124,9 @@ void AClimbingSystemCharacter::SetupPlayerInputComponent(class UInputComponent *
 		//Climbing
 		EnhancedInputComponent->BindAction(ClimbAction, ETriggerEvent::Started, this, &AClimbingSystemCharacter::onClimbActionStarted);
 
+		//
+		EnhancedInputComponent->BindAction(ClimbHopAction, ETriggerEvent::Started, this, &AClimbingSystemCharacter::onClimbHopActionStarted);
+
 	}
 
 }
@@ -198,16 +201,24 @@ void AClimbingSystemCharacter::onClimbActionStarted(const FInputActionValue &Val
 	}	
 }
 
+
+
 void AClimbingSystemCharacter::OnPlayerEnterClimbState()
 {	
-	Debug::Print(TEXT("Entered Climb State"));
+	// Debug::Print(TEXT("Entered Climb State"));
 	AddInputMappingContext(ClimbMappingContext,1);
 }
 
 void AClimbingSystemCharacter::OnPlayerExitClimbState()
 {	
-	Debug::Print(TEXT("Exited Climb State"));
+	// Debug::Print(TEXT("Exited Climb State"));
 	RemoveInputMappingContext(ClimbMappingContext);
 }
 
-
+void AClimbingSystemCharacter::onClimbHopActionStarted(const FInputActionValue &Value)
+{
+	if(CustomMovementComponent)
+	{
+		CustomMovementComponent->RequestHopping();
+	}
+}

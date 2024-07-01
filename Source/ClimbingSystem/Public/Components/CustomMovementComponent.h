@@ -35,9 +35,8 @@ public:
 	FOnEnterClimbState OnEnterClimbStateDelegate;
 	FOnExitClimbState OnExitClimbStateDelegate;
 
-protected:
 #pragma region OverridenFunctions
-
+protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
@@ -45,22 +44,19 @@ protected:
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
 	virtual FVector ConstrainAnimRootMotionVelocity(const FVector& RootMotionVelocity, const FVector& CurrentVelocity) const override;
-
-
 #pragma endregion
 
-private:
-
 #pragma region ClimbTraces
+private:
 	TArray<FHitResult> DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPresistantShapes = false);
+	
 	FHitResult DoLineTraceSingleByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPresistantShapes = false);
 
+	FHitResult TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f,bool bShowDebugShape = false, bool bDrawPresistantShapes = false);
 #pragma endregion
 
 #pragma region ClimbCore
-	bool TraceClimableSurfaces(); 
-
-	FHitResult TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f);
+	bool TraceClimableSurfaces();
 
 	bool CanStartClimbing();
 
@@ -93,8 +89,15 @@ private:
 	UFUNCTION()
 	void OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
-	UFUNCTION()
 	void SetMotionWarpTarget(const FName& InWarpTargetName, const FVector& InTargetPosition);
+
+	void HandleHopUp();
+	
+	void HandleHopDown();
+
+	bool CheckCanHopUp(FVector& OutHopUpTargetPosition);
+
+	bool CheckCanHopDown(FVector& OutHopUpTargetPosition);
 
 #pragma endregion
 
@@ -152,10 +155,17 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
 	UAnimMontage* VaultMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
+	UAnimMontage* HopUpMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"));
+	UAnimMontage* HopDownMontage;
+
 #pragma endregion
 
 public:
 	void ToggleClimbing(bool bEnableClimb);
+	void RequestHopping();
 	bool IsClimbing() const;
 	FORCEINLINE FVector GetClimbableSurfaceNormal() const {return CurrentClimbableSurfaceNormal;}
 	FVector GetUnrotatedClimbVelocity() const;

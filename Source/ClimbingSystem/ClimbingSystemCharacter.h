@@ -75,6 +75,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ClimbAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ClimbHopAction;
 #pragma endregion
 
 #pragma region InputCallback
@@ -86,6 +89,8 @@ private:
 	void Look(const FInputActionValue& Value);
 	
 	void onClimbActionStarted(const FInputActionValue& Value);
+
+	void onClimbHopActionStarted(const FInputActionValue& Value);
 #pragma endregion
 	
 protected:
@@ -105,4 +110,3 @@ public:
 	
 	FORCEINLINE class UMotionWarpingComponent* GetMotionWarpingComponent() const {return MotionWarpingComponent; }
 };
-
