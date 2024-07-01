@@ -124,7 +124,7 @@ void AClimbingSystemCharacter::SetupPlayerInputComponent(class UInputComponent *
 		//Climbing
 		EnhancedInputComponent->BindAction(ClimbAction, ETriggerEvent::Started, this, &AClimbingSystemCharacter::onClimbActionStarted);
 
-		//
+		//Climb Hop Action
 		EnhancedInputComponent->BindAction(ClimbHopAction, ETriggerEvent::Started, this, &AClimbingSystemCharacter::onClimbHopActionStarted);
 
 	}

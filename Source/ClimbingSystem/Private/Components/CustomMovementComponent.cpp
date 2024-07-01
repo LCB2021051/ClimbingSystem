@@ -538,7 +538,8 @@ void UCustomMovementComponent::SnapMovementToClimableSurfaces(float DeltaTime)
     UpdatedComponent->MoveComponent(
         SnapVector * DeltaTime * MaxClimbSpeed,
         UpdatedComponent->GetComponentQuat(),
-        true);
+        true
+    );
 }
 
 
